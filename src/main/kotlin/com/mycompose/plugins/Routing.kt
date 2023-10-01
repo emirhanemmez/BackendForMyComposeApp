@@ -23,14 +23,13 @@ fun Application.configureRouting() {
             if (pageNumberParameter != null) {
                 if (searchParameter != null) {
                     val searchData = listData.filter { it.name.contains(searchParameter) }
-                    val nextPageAvailable = searchData.size > (pageNumberParameter + 1) * 10
-                    val list =
-                        if (nextPageAvailable)
-                            searchData.subList(pageNumberParameter * PAGE_SIZE, (pageNumberParameter + 1) * 10)
-                        else if (searchData.isNotEmpty())
-                            searchData
-                        else
-                            listOf()
+                    val nextPageAvailable = searchData.size > (pageNumberParameter + 1) * PAGE_SIZE
+                    val list = if (searchData.isNotEmpty())
+                        searchData.subList(pageNumberParameter * PAGE_SIZE, (pageNumberParameter + 1) * PAGE_SIZE)
+                    else
+                        listOf()
+
+                    Thread.sleep(2000)
                     call.respond(
                         HttpStatusCode.OK,
                         Response<GetListResponse, ListErrorCode>(
@@ -44,14 +43,14 @@ fun Application.configureRouting() {
                         )
                     )
                 } else {
-                    val nextPageAvailable = listData.size > (pageNumberParameter + 1) * 10
-                    val list = if (nextPageAvailable) listData.subList(
+                    val nextPageAvailable = listData.size > (pageNumberParameter + 1) * PAGE_SIZE
+                    val list = if (listData.isNotEmpty()) listData.subList(
                         pageNumberParameter * PAGE_SIZE,
-                        (pageNumberParameter + 1) * 10
-                    ) else if (listData.isNotEmpty())
-                        listData
-                    else
+                        (pageNumberParameter + 1) * PAGE_SIZE
+                    ) else
                         listOf()
+
+                    Thread.sleep(2000)
                     call.respond(
                         HttpStatusCode.OK,
                         Response<GetListResponse, ListErrorCode>(
